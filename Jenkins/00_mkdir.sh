@@ -1,0 +1,1 @@
+mkdir -p ./jenkins_home

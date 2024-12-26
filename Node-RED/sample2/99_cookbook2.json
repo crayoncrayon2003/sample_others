@@ -1,0 +1,87 @@
+[
+    {
+        "id": "dfe2f03be3cd5d62",
+        "type": "subflow",
+        "name": "sampleflow_sub",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "343270c1af19bf9b"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 500,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "df554f533f86a6af",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "df554f533f86a6af",
+        "type": "change",
+        "z": "dfe2f03be3cd5d62",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "c",
+                "pt": "msg",
+                "to": "b",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "343270c1af19bf9b",
+        "type": "change",
+        "z": "dfe2f03be3cd5d62",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "b",
+                "pt": "msg",
+                "to": "a",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "df554f533f86a6af"
+            ]
+        ]
+    }
+]

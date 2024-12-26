@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    hostname: gitlab
+    container_name: gitlab
+    restart: always
+    ports:
+      - "80:80"       # HTTP
+      - "443:443"     # HTTPS
+      - "2424:24"     # SSH
+      - "5000:5000"   # Container Registry
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://172.28.164.85:80'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2424
+        registry_external_url 'http://172.28.164.85:5000'
+    volumes:
+      - ./gitlab_config:/etc/gitlab
+      - ./gitlab_logs:/var/log/gitlab
+      - ./gitlab_data:/var/opt/gitlab
+    shm_size: '256m'
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    restart: always
+    ports:
+      - "8093:8093"
+    volumes:
+      - ./gitlab-runner/:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:

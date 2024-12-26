@@ -1,0 +1,1 @@
+sudo rm -R ./gitlab_config ./gitlab_data ./gitlab_logs ./gitlab-runner

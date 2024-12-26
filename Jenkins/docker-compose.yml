@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    hostname: jenkins
+    container_name: jenkins
+    restart: always
+    ports:
+      - "8080:8080"     # Web interface
+      - "50000:50000"   # Jenkins agent accsess port
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+      # - jenkins_plugins:/var/jenkins_home/plugins
+
+  jenkins-agent1:
+    image: jenkins/inbound-agent
+    hostname: jenkins-agent1
+    container_name: jenkins-agent1
+    restart: always
+    depends_on:
+      - jenkins
+    environment:
+      - JENKINS_URL=http://jenkins:8080
+      - JENKINS_AGENT_NAME=jenkins-agent1
+      - JENKINS_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+  jenkins-agent2:
+    image: jenkins/inbound-agent
+    hostname: jenkins-agent2
+    container_name: jenkins-agent2
+    restart: always
+    depends_on:
+      - jenkins
+    environment:
+      - JENKINS_URL=http://jenkins:8080
+      - JENKINS_AGENT_NAME=jenkins-agent2
+      - JENKINS_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+volumes:
+  jenkins_home:
+  jenkins_plugins:
