@@ -11,7 +11,6 @@ services:
       - "50000:50000"   # Jenkins agent accsess port
     volumes:
       - ./jenkins_home:/var/jenkins_home
-      # - jenkins_plugins:/var/jenkins_home/plugins
 
   jenkins-agent1:
     image: jenkins/inbound-agent
