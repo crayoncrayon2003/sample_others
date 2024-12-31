@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  jenkins:
+    build:
+      context: docker_jenkins/
+      dockerfile: ./Dockerfile
+    hostname: jenkins
+    container_name: jenkins
+    restart: always
+    ports:
+      - "8080:8080"     # Web interface
+      - "50000:50000"   # Jenkins agent accsess port
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    hostname: gitlab
+    container_name: gitlab
+    restart: always
+    ports:
+      - "80:80"       # HTTP
+      - "5000:5000"   # Container Registry
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://172.28.164.85:80'
+        gitlab_rails['gitlab_shell_ssh_port'] = 0
+        registry_external_url 'http://172.28.164.85:5000'
+    volumes:
+      - ./gitlab_config:/etc/gitlab
+      - ./gitlab_logs:/var/log/gitlab
+      - ./gitlab_data:/var/opt/gitlab
+
+volumes:
+  jenkins_home:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
