@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  openrefine:
+    build: ./OpenRefine
+    container_name: OpenRefine
+    hostname: OpenRefine
+    ports:
+      - "3333:3333"
+    volumes:
+      - openrefine_data:/opt/openrefine/workspace
+    restart: unless-stopped
+
+volumes:
+  openrefine_data:
