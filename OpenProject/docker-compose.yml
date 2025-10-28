@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:17
+    container_name: openproject-db
+    hostname: db
+    environment:
+      POSTGRES_DB: openproject
+      POSTGRES_USER: openproject
+      POSTGRES_PASSWORD: openproject
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+  memcached:
+    image: memcached:1.6
+    container_name: openproject-memcached
+    restart: always
+    ports:
+      - "11211:11211"
+
+  openproject:
+    image: openproject/openproject:16.3.0
+    container_name: openproject-app
+    depends_on:
+      - db
+      - memcached
+    environment:
+      DATABASE_URL: postgres://openproject:openproject@db:5432/openproject
+      OPENPROJECT_HOST__NAME: localhost
+      OPENPROJECT_HTTPS: "false"
+      OPENPROJECT_SECRET_KEY_BASE: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+    volumes:
+      - opdata:/var/openproject/assets
+    ports:
+      - "8080:80"
+    restart: always
+
+volumes:
+  pgdata:
+  opdata:
