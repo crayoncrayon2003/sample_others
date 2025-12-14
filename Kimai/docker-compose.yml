@@ -1,0 +1,41 @@
+services:
+  database:
+    image: mysql:8.0
+    container_name: kimai-db
+    environment:
+      MYSQL_DATABASE: kimai
+      MYSQL_USER: kimaiuser
+      MYSQL_PASSWORD: kimaipass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - kimai_db_data:/var/lib/mysql
+    command: --default-storage-engine=innodb --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: unless-stopped
+    networks:
+      - kimai-network
+
+  kimai:
+    image: kimai/kimai2:apache-2.27.0
+    container_name: kimai-app
+    depends_on:
+      - database
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: mysql://kimaiuser:kimaipass@database/kimai
+      TRUSTED_HOSTS: localhost,127.0.0.1
+      ADMINMAIL: admin@example.com
+      ADMINPASS: admin1234
+    volumes:
+      - kimai_data:/opt/kimai/var
+    restart: unless-stopped
+    networks:
+      - kimai-network
+
+volumes:
+  kimai_db_data:
+  kimai_data:
+
+networks:
+  kimai-network:
+    driver: bridge
