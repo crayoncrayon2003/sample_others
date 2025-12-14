@@ -17,7 +17,7 @@ from metadata.generated.schema.entity.services.connections.database.mysqlConnect
 # 設定
 # ==========================================
 SERVER_HOST = "http://localhost:8585/api"
-JWT_TOKEN = "eyJraWQiOiJHYjM4OWEtOWY3Ni1nZGpzLWE5MmotMDI0MmJrOTQzNTYiLCJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvcGVuLW1ldGFkYXRhLm9yZyIsInN1YiI6InNhbXBsZSIsInJvbGVzIjpbXSwiZW1haWwiOiJzYW1wbGVAb3Blbi1tZXRhZGF0YS5vcmciLCJpc0JvdCI6dHJ1ZSwidG9rZW5UeXBlIjoiQk9UIiwiaWF0IjoxNzY1Njk5ODM3LCJleHAiOjE3NjgyOTE4Mzd9.dqmvycrh2W4mvMTiATwbHTVtLGYqLQkVcbnyL-ZO2pZLKJPazAZ-ET9O3kK7LIKbpFwaQjhSLlQUFZUBWmPlUTOp6Px-mhHW0SdQ7lZsRmIt7ZFRoPuZHxHQDTMWO2DlT4L1Le5A3Okfhyu-aPOjJ7VrO30yxZ-ld-HPBwGI9KBBIcNwYCXquYQqEDAJoNS7Q1l3p7aIHHb0lScu0Zh583nRaC0G0hpN7PJs5SU_H_ub4zFSyNMH4Z_EanpYCmr-Zg6zCwm8mTE0iY_Gd23QOrrr4BOprorAWn85DapDeM52fUOroHZz2eyzZhM2iWrJiIOW_PbhJyI-muMQV_tczg"
+JWT_TOKEN = "eyJra.eyJpc"
 # ==========================================
 
 class CatalogManager:
