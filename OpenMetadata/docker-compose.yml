@@ -1,0 +1,101 @@
+services:
+  mysql:
+    image: docker.getcollate.io/openmetadata/db:1.6.3
+    container_name: openmetadata-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: openmetadata_db
+      MYSQL_USER: openmetadata_user
+      MYSQL_PASSWORD: openmetadata_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - openmetadata-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
+    container_name: openmetadata-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - openmetadata-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    restart: unless-stopped
+
+  execute-migrate-all:
+    image: docker.getcollate.io/openmetadata/server:1.6.3
+    container_name: openmetadata-migrate
+    command: "./bootstrap/openmetadata-ops.sh migrate"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: openmetadata_user
+      DB_USER_PASSWORD: openmetadata_password
+      OM_DATABASE: openmetadata_db
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      SEARCH_TYPE: elasticsearch
+      AUTHENTICATION_PROVIDER: basic
+      AUTHORIZER_CLASS_NAME: org.openmetadata.service.security.DefaultAuthorizer
+      AUTHORIZER_REQUEST_FILTER: org.openmetadata.service.security.JwtFilter
+      AUTHORIZER_ADMIN_PRINCIPALS: "[admin]"
+      AUTHORIZER_PRINCIPAL_DOMAIN: "open-metadata.org"
+    networks:
+      - openmetadata-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+
+  openmetadata-server:
+    image: docker.getcollate.io/openmetadata/server:1.6.3
+    container_name: openmetadata-server
+    ports:
+      - "8585:8585"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: openmetadata_user
+      DB_USER_PASSWORD: openmetadata_password
+      OM_DATABASE: openmetadata_db
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      SEARCH_TYPE: elasticsearch
+      AUTHENTICATION_PROVIDER: basic
+      AUTHORIZER_CLASS_NAME: org.openmetadata.service.security.DefaultAuthorizer
+      AUTHORIZER_REQUEST_FILTER: org.openmetadata.service.security.JwtFilter
+      AUTHORIZER_ADMIN_PRINCIPALS: "[admin]"
+      AUTHORIZER_PRINCIPAL_DOMAIN: "open-metadata.org"
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8585
+    networks:
+      - openmetadata-network
+    depends_on:
+      execute-migrate-all:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+  es-data:
+
+networks:
+  openmetadata-network:
+    driver: bridge
