@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: moodle
+      MYSQL_USER: moodle
+      MYSQL_PASSWORD: moodlepassword
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-file-per-table=1
+
+  moodle:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      MOODLE_DB_HOST: db
+      MOODLE_DB_NAME: moodle
+      MOODLE_DB_USER: moodle
+      MOODLE_DB_PASSWORD: moodlepassword
+      MOODLE_URL: http://localhost:8080
+      MOODLE_ADMIN_USER: admin
+      MOODLE_ADMIN_PASSWORD: password
+      MOODLE_ADMIN_EMAIL: admin@example.com
+      MOODLE_SITE_NAME: My Moodle Site
+    volumes:
+      - moodledata:/var/moodledata
+
+volumes:
+  mariadb_data:
+  moodledata:
